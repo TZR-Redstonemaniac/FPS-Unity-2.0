@@ -7,10 +7,19 @@ public class Player : MonoBehaviour
     ////////////////////////////////////////Public Variables/////////////////////////////////////////
 
     [Header("Movement")]
+    [SerializeField] private float walkSpeed;
+    [SerializeField] private float runSpeed;
+    [SerializeField] private float speedCap;
     [SerializeField] private float groundDrag;
+    
+    [Header("Jumping")]
     [SerializeField] private float jumpPower;
     [SerializeField] private float airMult;
 
+    [Header("Crouching")] 
+    [SerializeField] private float crouchSpeed;
+    [SerializeField] private float crouchYScale;
+    
     [Header("Ground Check")] 
     [SerializeField] private float playerHeight;
     [SerializeField] private LayerMask whatIsGround;
@@ -37,11 +46,28 @@ public class Player : MonoBehaviour
     private bool fireLeft;
     private bool fireRight;
     private bool jump;
+    private bool sprint;
+    private bool crouch;
+    private bool didCrouchForce;
+    
     private bool grounded;
+    private bool above;
 
     private float moveSpeed;
+    private float startYScale;
+
+    [HideInInspector] public MovementState state;
 
     /////////////////////////////////////////////////Code/////////////////////////////////////////////////
+
+    public enum MovementState
+    {
+        walking,
+        sprinting,
+        air,
+        crouching
+    }
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -49,6 +75,8 @@ public class Player : MonoBehaviour
         player = ReInput.players.GetPlayer(playerID);
 
         Cursor.lockState = CursorLockMode.Locked;
+
+        startYScale = transform.localScale.y;
     }
 
     // Update is called once per frame
@@ -58,6 +86,8 @@ public class Player : MonoBehaviour
         MoveCam();
         MovePlayer();
         SpeedControl();
+        StateHandler();
+        Crouch();
         
         if (jump & grounded)
         {
@@ -67,6 +97,26 @@ public class Player : MonoBehaviour
         GroundCheck();
     }
 
+    void Crouch()
+    {
+        if (crouch || above)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            if (!didCrouchForce)
+            {
+                rb.AddForce(Vector3.down * 5, ForceMode.Impulse);
+                didCrouchForce = true;
+            }
+            above = Physics.Raycast(transform.position, Vector3.up, playerHeight * 0.25f + 0.2f);
+        }
+        else
+        {
+            transform.localScale = new Vector3(transform.localScale.x, startYScale, transform.localScale.z);
+            didCrouchForce = false;
+        }
+
+    }
+
     void CheckInput()
     {
         moveVector.x = player.GetAxis("Move Horizontal");
@@ -74,11 +124,37 @@ public class Player : MonoBehaviour
         
         fireLeft = player.GetButtonDown("Fire Left");
         fireRight = player.GetButtonDown("Fire Right");
-        jump = player.GetButton("Jump");
         
         lookVector.y += player.GetAxis("Look Horizontal");
         lookVector.x += player.GetAxis("Look Vertical");
+        
         lookVector.x = Mathf.Clamp(lookVector.x, minY, maxY);
+        
+        jump = player.GetButton("Jump");
+        sprint = player.GetButton("Sprint");
+        crouch = player.GetButton("Crouch");
+    }
+
+    void StateHandler()
+    {
+        switch (grounded)
+        {
+            case true when crouch:
+                state = MovementState.crouching;
+                moveSpeed = crouchSpeed;
+                break;
+            case true when sprint:
+                state = MovementState.sprinting;
+                moveSpeed = runSpeed;
+                break;
+            case true:
+                state = MovementState.walking;
+                moveSpeed = walkSpeed;
+                break;
+            default:
+                state = MovementState.air;
+                break;
+        }
     }
 
     void MovePlayer()
@@ -114,7 +190,7 @@ public class Player : MonoBehaviour
     {
         Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        if (flatVel.magnitude > moveSpeed)
+        if (flatVel.magnitude > speedCap)
         {
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);

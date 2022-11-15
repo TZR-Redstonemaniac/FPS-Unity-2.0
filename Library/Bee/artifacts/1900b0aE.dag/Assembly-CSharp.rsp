@@ -380,7 +380,6 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.VSCode.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
-"Assets/Player.cs"
 "Assets/Rewired/Examples/ControlRemapping1/Scripts/ControlRemappingDemo1.cs"
 "Assets/Rewired/Examples/CustomControllersTilt/Scripts/CustomControllersTiltDemo.cs"
 "Assets/Rewired/Examples/CustomControllersTouch/Scripts/CustomControllerDemo.cs"
@@ -445,6 +444,7 @@
 "Assets/Rewired/Internal/Scripts/DataStorage/UserDataStore_PlayerPrefs.cs"
 "Assets/Rewired/Internal/Scripts/InputManager.cs"
 "Assets/Rewired/Internal/Scripts/Misc/ExternalTools.cs"
+"Assets/Scripts/Player.cs"
 -langversion:9.0
 
 /deterministic
