@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{9c127d36-625a-758a-5eeb-4a29ec4ceaf4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rewired_Windows_Functions", "Rewired_Windows_Functions.csproj", "{ce79d744-9b69-3a52-cbdf-f79e7dfc305f}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{d0475a2a-772d-1b62-b355-87af02427c61}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9c127d36-625a-758a-5eeb-4a29ec4ceaf4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9c127d36-625a-758a-5eeb-4a29ec4ceaf4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ce79d744-9b69-3a52-cbdf-f79e7dfc305f}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ce79d744-9b69-3a52-cbdf-f79e7dfc305f}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{d0475a2a-772d-1b62-b355-87af02427c61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{d0475a2a-772d-1b62-b355-87af02427c61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

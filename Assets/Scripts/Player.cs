@@ -11,9 +11,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float runSpeed;
     [SerializeField] private float speedCap;
     [SerializeField] private float groundDrag;
-    
+
     [Header("Jumping")]
     [SerializeField] private float jumpPower;
+    [SerializeField] private float jumpCooldown;
     [SerializeField] private float airMult;
 
     [Header("Crouching")] 
@@ -23,6 +24,9 @@ public class Player : MonoBehaviour
     [Header("Ground Check")] 
     [SerializeField] private float playerHeight;
     [SerializeField] private LayerMask whatIsGround;
+    
+    [Header("Slope Handling")]
+    [SerializeField] private float maxSlopeAngle;
     
     [Header("Camera")]
     [SerializeField] private float minY = -80;
@@ -42,6 +46,7 @@ public class Player : MonoBehaviour
 
     private Vector3 moveVector;
     private Vector3 lookVector;
+    private Vector3 moveDir;
 
     private bool fireLeft;
     private bool fireRight;
@@ -52,11 +57,42 @@ public class Player : MonoBehaviour
     
     private bool grounded;
     private bool above;
+    private bool readyToJump = true;
+    private bool exitingSlope;
 
     private float moveSpeed;
     private float startYScale;
 
+    private RaycastHit slopeHit;
+
     [HideInInspector] public MovementState state;
+
+    private bool OnSlope()
+    {
+        if (crouch)
+        {
+            if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.25f + 0.3f))
+            {
+                var angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+                return angle <= maxSlopeAngle && angle != 0;
+            }
+        }
+        else
+        {
+            if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+            {
+                var angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+                return angle <= maxSlopeAngle && angle != 0;
+            }
+        }
+
+        return false;
+    }
+
+    private Vector3 GetSlopeDirectionMovement()
+    {
+        return Vector3.ProjectOnPlane(moveDir, slopeHit.normal).normalized;
+    }
 
     /////////////////////////////////////////////////Code/////////////////////////////////////////////////
 
@@ -69,7 +105,7 @@ public class Player : MonoBehaviour
     }
     
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
         player = ReInput.players.GetPlayer(playerID);
@@ -80,7 +116,7 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         CheckInput();
         MoveCam();
@@ -88,16 +124,10 @@ public class Player : MonoBehaviour
         SpeedControl();
         StateHandler();
         Crouch();
-        
-        if (jump & grounded)
-        {
-            Jump();
-        }
-
         GroundCheck();
     }
 
-    void Crouch()
+    private void Crouch()
     {
         if (crouch || above)
         {
@@ -107,7 +137,7 @@ public class Player : MonoBehaviour
                 rb.AddForce(Vector3.down * 5, ForceMode.Impulse);
                 didCrouchForce = true;
             }
-            above = Physics.Raycast(transform.position, Vector3.up, playerHeight * 0.25f + 0.2f);
+            above = Physics.Raycast(transform.position, Vector3.up, playerHeight * 0.5f + 0.2f);
         }
         else
         {
@@ -117,11 +147,21 @@ public class Player : MonoBehaviour
 
     }
 
-    void CheckInput()
+    private void CheckInput()
     {
         moveVector.x = player.GetAxis("Move Horizontal");
         moveVector.z = player.GetAxis("Move Vertical");
-        
+
+        if (!player.GetButton("W") && !player.GetButton("S"))
+        {
+            moveVector.z = 0f;
+        }
+
+        if (!player.GetButton("A") && !player.GetButton("D"))
+        {
+            moveVector.x = 0f;
+        }
+
         fireLeft = player.GetButtonDown("Fire Left");
         fireRight = player.GetButtonDown("Fire Right");
         
@@ -133,13 +173,22 @@ public class Player : MonoBehaviour
         jump = player.GetButton("Jump");
         sprint = player.GetButton("Sprint");
         crouch = player.GetButton("Crouch");
+
+        if (jump & grounded & readyToJump)
+        {
+            readyToJump = false;
+
+            Jump();
+
+            Invoke(nameof(ResetJump), jumpCooldown);
+        }
     }
 
-    void StateHandler()
+    private void StateHandler()
     {
         switch (grounded)
         {
-            case true when crouch:
+            case true when crouch || above:
                 state = MovementState.crouching;
                 moveSpeed = crouchSpeed;
                 break;
@@ -157,9 +206,19 @@ public class Player : MonoBehaviour
         }
     }
 
-    void MovePlayer()
+    private void MovePlayer()
     {
-        var moveDir = transform.forward * moveVector.z + transform.right * moveVector.x;
+        moveDir = transform.forward * moveVector.z + transform.right * moveVector.x;
+
+        if (OnSlope() && !exitingSlope)
+        {
+            rb.AddForce(GetSlopeDirectionMovement() * moveSpeed * 10f, ForceMode.Force);
+
+            if (rb.velocity.y > 0)
+            {
+                rb.AddForce(Vector3.down * 80, ForceMode.Force);
+            }
+        }
 
         switch (grounded)
         {
@@ -170,9 +229,11 @@ public class Player : MonoBehaviour
                 rb.AddForce(moveDir.normalized * moveSpeed * 10 * airMult, ForceMode.Force);
                 break;
         }
+
+        rb.useGravity = !OnSlope();
     }
 
-    void GroundCheck()
+    private void GroundCheck()
     {
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
@@ -186,24 +247,42 @@ public class Player : MonoBehaviour
         }
     }
 
-    void SpeedControl()
+    private void SpeedControl()
     {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
-        if (flatVel.magnitude > speedCap)
+        if (OnSlope() && !exitingSlope)
         {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
+            if (rb.velocity.magnitude > moveSpeed)
+            {
+                rb.velocity = rb.velocity.normalized * moveSpeed;
+            }
+        }
+        else
+        {
+            var flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+            // limit velocity if needed
+            if (!(flatVel.magnitude > moveSpeed)) return;
+            var limitedVel = flatVel.normalized * moveSpeed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
     }
 
-    void Jump()
+    private void Jump()
     {
+        exitingSlope = true;
+        
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
     }
 
-    void MoveCam()
+    private void ResetJump()
+    {
+        readyToJump = true;
+
+        exitingSlope = false;
+    }
+
+    private void MoveCam()
     {
         transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.x, lookVector.y * sens, transform.rotation.z));
         camPos.rotation = Quaternion.Euler(-lookVector.x * sens, lookVector.y * sens, 0);
