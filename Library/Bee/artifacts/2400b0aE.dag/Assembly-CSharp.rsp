@@ -328,8 +328,10 @@
 -r:"/home/khalid/Unity/Hub/Editor/2021.3.13f1/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Xml.XmlDocument.dll"
 -r:"/home/khalid/Unity/Hub/Editor/2021.3.13f1/Editor/Data/NetStandard/compat/2.1.0/shims/netstandard/System.Xml.XmlSerializer.dll"
 -r:"/home/khalid/Unity/Hub/Editor/2021.3.13f1/Editor/Data/NetStandard/ref/2.1.0/netstandard.dll"
+-r:"Assets/Plugins/Demigiant/DOTween/DOTween.dll"
 -r:"Assets/Rewired/Internal/Libraries/Runtime/Rewired_Core.dll"
 -r:"Assets/Rewired/Internal/Libraries/Runtime/Rewired_Linux.dll"
+-r:"Library/Bee/artifacts/2400b0aE.dag/Assembly-CSharp-firstpass.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/PPv2URPConverters.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Rewired_Windows_Functions.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Burst.Editor.ref.dll"
@@ -440,6 +442,7 @@
 "Assets/Rewired/Internal/Scripts/DataStorage/UserDataStore_PlayerPrefs.cs"
 "Assets/Rewired/Internal/Scripts/InputManager.cs"
 "Assets/Rewired/Internal/Scripts/Misc/ExternalTools.cs"
+"Assets/Scripts/HookGun.cs"
 "Assets/Scripts/Player.cs"
 -langversion:9.0
 

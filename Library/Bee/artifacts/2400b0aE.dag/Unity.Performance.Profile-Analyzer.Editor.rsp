@@ -340,6 +340,8 @@
 -r:"/home/khalid/Unity/Hub/Editor/2021.3.13f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Xml.dll"
 -r:"/home/khalid/Unity/Hub/Editor/2021.3.13f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.dll"
 -r:"/home/khalid/Unity/Hub/Editor/2021.3.13f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/mscorlib.dll"
+-r:"Assets/Plugins/Demigiant/DOTween/DOTween.dll"
+-r:"Assets/Plugins/Demigiant/DOTween/Editor/DOTweenEditor.dll"
 -r:"Assets/Rewired/Internal/Libraries/Editor/Rewired_Editor.dll"
 -r:"Assets/Rewired/Internal/Libraries/Runtime/Rewired_Core.dll"
 -r:"Assets/Rewired/Internal/Libraries/Runtime/Rewired_Linux.dll"
