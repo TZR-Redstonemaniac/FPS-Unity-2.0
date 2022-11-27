@@ -43247,7 +43247,7 @@ MonoBehaviour:
   useCamForward: 1
   allowAllDir: 0
   disableGrav: 1
-  resetVel: 1
+  resetVel: 0
   hookFovChange: 5
   activeHook: 0
   playerID: 0
