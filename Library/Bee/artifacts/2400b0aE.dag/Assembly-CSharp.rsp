@@ -442,8 +442,12 @@
 "Assets/Rewired/Internal/Scripts/DataStorage/UserDataStore_PlayerPrefs.cs"
 "Assets/Rewired/Internal/Scripts/InputManager.cs"
 "Assets/Rewired/Internal/Scripts/Misc/ExternalTools.cs"
+"Assets/Scripts/GrappleGun.cs"
 "Assets/Scripts/HookGun.cs"
 "Assets/Scripts/Player.cs"
+"Assets/Scripts/Rope.cs"
+"Assets/Scripts/Spring.cs"
+"Assets/Scripts/Switcher.cs"
 -langversion:9.0
 
 /deterministic

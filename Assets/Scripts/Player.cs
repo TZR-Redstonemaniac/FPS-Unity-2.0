@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using Rewired;
 using DG.Tweening;
+#pragma warning disable CS0414
 
 public class Player : MonoBehaviour
 {
@@ -20,12 +21,13 @@ public class Player : MonoBehaviour
     [SerializeField] private float speedCap;
     [SerializeField] private float ySpeedCap;
     [SerializeField] private float groundDrag;
-    [SerializeField] private float maxAirMoveSpeed;
+    [SerializeField] private float airSpeed;
+    [SerializeField] private float swingSpeed;
     
     private Rigidbody rb;
     
+    [HideInInspector] public Vector3 moveVector;
     private Vector3 moveDir;
-    private Vector3 moveVector;
     
     private float moveSpeed;
     private float desiredMoveSpeed;
@@ -58,8 +60,9 @@ public class Player : MonoBehaviour
     #region Ground Check
 
     [Header("Ground Check")] 
-    [SerializeField] private float playerHeight;
     [SerializeField] private LayerMask whatIsGround;
+    
+    public float playerHeight;
     
     private bool grounded;
 
@@ -249,6 +252,19 @@ public class Player : MonoBehaviour
     private Vector3 delayedForceToApply;
 
     #endregion
+
+    #region Hooking
+
+    [Header("Hooking")]
+    [SerializeField] private float hookFovChange;
+
+    [HideInInspector] public bool activeHook;
+    
+    private Vector3 velocityToSet;
+
+    private bool enableMovementOnNextTouch;
+
+    #endregion
     
     #region Rewired
 
@@ -257,25 +273,25 @@ public class Player : MonoBehaviour
 
     private Rewired.Player player;
     
-    private bool fireLeft;
-    private bool fireRight;
-    private bool jump;
-    private bool sprint;
-    private bool crouch;
-    private bool dash;
+    [HideInInspector] public bool fireLeft;
+    [HideInInspector] public bool fireRight;
+    [HideInInspector] public bool jump;
+    [HideInInspector] public bool sprint;
+    [HideInInspector] public bool crouch;
+    [HideInInspector] public bool dash;
+    [HideInInspector] public bool scrollUp;
+    [HideInInspector] public bool scrollDown;
     
     private bool readyToJump = true;
-    
-
 
     #endregion
 
     #region Etc
 
-    private MovementState state;
+    [HideInInspector] public MovementState state;
     private MovementState lastState;
 
-    private enum MovementState
+    public enum MovementState
     {
         unlimited,
         freeze,
@@ -287,12 +303,14 @@ public class Player : MonoBehaviour
         sliding,
         crouching,
         climbing,
-        ledge
+        ledge,
+        swinging
     }
 
-    private bool freeze;
-    private bool unlimited;
+    [HideInInspector] public bool freeze;
+    [HideInInspector] public bool swinging;
     private bool restricted;
+    private bool unlimited;
     private bool dashing;
     private bool keepMomentum;
 
@@ -336,11 +354,10 @@ public class Player : MonoBehaviour
         moveVector.z = player.GetAxis("Move Vertical");
 
         if (!player.GetButton("W") && !player.GetButton("S")) moveVector.z = 0f;
-
         if (!player.GetButton("A") && !player.GetButton("D")) moveVector.x = 0f;
         
-        fireLeft = player.GetButtonDown("Fire Left");
-        fireRight = player.GetButtonDown("Fire Right");
+        fireLeft = player.GetButton("Fire Left");
+        fireRight = player.GetButton("Fire Right");
         
         lookVector.y += player.GetAxis("Look Horizontal");
         lookVector.x += player.GetAxis("Look Vertical");
@@ -351,6 +368,21 @@ public class Player : MonoBehaviour
         sprint = player.GetButton("Sprint");
         crouch = player.GetButton("Crouch");
         dash = player.GetButton("Dash");
+        
+        if (player.GetAxis("Scroll") > 0)
+        {
+            scrollUp = true;
+            scrollDown = false;
+        } else if (player.GetAxis("Scroll") < 0)
+        {
+            scrollUp = false;
+            scrollDown = true;
+        }
+        else
+        {
+            scrollUp = false;
+            scrollDown = false;
+        }
 
         wallrunUp = player.GetButton("Wallrun Up");
         wallrunDown = player.GetButton("Wallrun Down");
@@ -495,27 +527,32 @@ public class Player : MonoBehaviour
     
     private void StateHandler()
     {
-        if (dashing)
-        {
-            state = MovementState.dashing;
-            desiredMoveSpeed = dashSpeed;
-            speedChangeFactor = dashSpeedChangeFactor;
-        }
-        if (holding || exitingLedge)
-        {
-            state = MovementState.ledge;
-            desiredMoveSpeed = ledgeJumpForwardForce + ledgeJumpUpForce;
-        }
         if (freeze)
         {
             state = MovementState.freeze;
             rb.velocity = Vector3.zero;
             desiredMoveSpeed = 0f;
         } 
+        else if (dashing)
+        {
+            state = MovementState.dashing;
+            desiredMoveSpeed = dashSpeed;
+            speedChangeFactor = dashSpeedChangeFactor;
+        }
+        else if (holding || exitingLedge)
+        {
+            state = MovementState.ledge;
+            desiredMoveSpeed = ledgeJumpForwardForce + ledgeJumpUpForce;
+        }
         else if (unlimited)
         {
             state = MovementState.unlimited;
             desiredMoveSpeed = 999f;
+        }
+        else if (swinging)
+        {
+            state = MovementState.swinging;
+            desiredMoveSpeed = swingSpeed;
         }
         else if (climbing)
         {
@@ -562,7 +599,8 @@ public class Player : MonoBehaviour
         else
         {
             state = MovementState.air;
-            if (desiredMoveSpeed > maxAirMoveSpeed) desiredMoveSpeed = Mathf.Clamp(desiredMoveSpeed, 0f, maxAirMoveSpeed);
+            keepMomentum = true;
+            desiredMoveSpeed = airSpeed;
         }
 
         
@@ -596,7 +634,24 @@ public class Player : MonoBehaviour
         camHolder.position = camPos.position;
         camHolder.rotation = camPos.rotation;
     }
-    
+
+    private void OnCollisionEnter()
+    {
+        if (enableMovementOnNextTouch)
+        {
+            enableMovementOnNextTouch = false;
+            ResetRestrictions();
+
+            camHolder.GetComponentInChildren<HookGun>().StopHook();
+        }
+    }
+
+    private void ResetRestrictions()
+    {
+        activeHook = false;
+        DoFov(fov);
+    }
+
     private void DoFov(float endVal)
     {
         cam.DOFieldOfView(endVal, 0.25f);
@@ -609,12 +664,12 @@ public class Player : MonoBehaviour
 
     #endregion
 
-    #region General Movement
+    #region Movement
     private void MovePlayer()
         {
             if (exitingClimbWall) return;
-            if (restricted) return;
-            if (state == MovementState.dashing) return;
+            if (activeHook) return;
+            if (state is MovementState.swinging or MovementState.dashing or MovementState.swinging) return;
 
             moveDir = transform.forward * moveVector.z + transform.right * moveVector.x;
 
@@ -692,7 +747,7 @@ public class Player : MonoBehaviour
                 : Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.3f, whatIsGround);
         }
 
-        if (state is MovementState.walking or MovementState.crouching or MovementState.sprinting)
+        if (state is MovementState.walking or MovementState.crouching or MovementState.sprinting && !activeHook)
         {
             rb.drag = groundDrag;
         }
@@ -704,6 +759,8 @@ public class Player : MonoBehaviour
 
     private void SpeedControl()
     {
+        if (activeHook) return;
+        
         if (OnSlope() && !exitingSlope)
         {
             if (rb.velocity.magnitude > moveSpeed)
@@ -1053,11 +1110,45 @@ public class Player : MonoBehaviour
 
     private Vector3 GetDirection(Transform forwardT)
     {
-        var direction = allowAllDir ? moveDir : forwardT.forward;
+        var direction = allowAllDir ? moveDir + forwardT.forward : forwardT.forward;
 
         if (moveVector.x == 0 && moveVector.z == 0) direction = forwardT.forward;
 
         return direction.normalized;
+    }
+
+    #endregion
+
+    #region Hooking
+
+    public void JumpToPosition(Vector3 targetPos, float trajectoryHeight)
+    {
+        activeHook = true;
+        
+        velocityToSet = CalculateJumpVelocity(transform.position, targetPos, trajectoryHeight);
+        Invoke(nameof(SetVelocity), 0.1f);
+        
+        Invoke(nameof(ResetRestrictions), 3f);
+    }
+
+    private void SetVelocity()
+    {
+        enableMovementOnNextTouch = true;
+        rb.velocity = velocityToSet;
+        
+        DoFov(fov + hookFovChange);
+    }
+
+    private static Vector3 CalculateJumpVelocity(Vector3 startPoint, Vector3 endPoint, float trajectoryHeight)
+    {
+        var gravity = Physics.gravity.y;
+        var displacementY = endPoint.y - startPoint.y;
+        var displacementXZ = new Vector3(endPoint.x - startPoint.x, 0f, endPoint.z - startPoint.z);
+
+        var velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * trajectoryHeight);
+        var velocityXZ = displacementXZ / (Mathf.Sqrt(-2 * trajectoryHeight / gravity) + Mathf.Sqrt(2 * (displacementY - trajectoryHeight) / gravity));
+
+        return velocityXZ + velocityY;
     }
 
     #endregion
