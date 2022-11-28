@@ -43,6 +43,7 @@
   <ItemGroup>
      <Compile Include="Assets/Rewired/Extras/ControlMapper/Scripts/ControlMapper_InputGrid.cs" />
      <Compile Include="Assets/Scripts/Player.cs" />
+     <Compile Include="Assets/Scripts/Gun.cs" />
      <Compile Include="Assets/Rewired/Examples/ControlRemapping1/Scripts/ControlRemappingDemo1.cs" />
      <Compile Include="Assets/Rewired/Extras/ControlMapper/Scripts/ButtonInfo.cs" />
      <Compile Include="Assets/Scripts/GrappleGun.cs" />
@@ -56,6 +57,7 @@
      <Compile Include="Assets/Rewired/Extras/ControlMapper/Scripts/CalibrationWindow.cs" />
      <Compile Include="Assets/Rewired/Examples/CustomControllersTouch/Scripts/CustomControllerDemo_Player.cs" />
      <Compile Include="Assets/Rewired/Examples/GamepadTemplateUI/Scripts/ControllerUIEffect.cs" />
+     <Compile Include="Assets/Scripts/Bullet.cs" />
      <Compile Include="Assets/Rewired/Extras/ControlMapper/Scripts/ToggleInfo.cs" />
      <Compile Include="Assets/Rewired/Examples/SimpleControlRemapping/Scripts/SimpleControlRemapping.cs" />
      <Compile Include="Assets/Rewired/Internal/Scripts/Misc/ExternalTools.cs" />
@@ -85,6 +87,7 @@
      <Compile Include="Assets/Rewired/Extras/ControlMapper/Scripts/UIControlSet.cs" />
      <Compile Include="Assets/Rewired/Examples/PressAnyButtonToJoin/Scripts/PressAnyButtonToJoinExample_Assigner.cs" />
      <Compile Include="Assets/Rewired/Extras/ControlMapper/Scripts/UISelectionUtility.cs" />
+     <Compile Include="Assets/CloneRemover.cs" />
      <Compile Include="Assets/Rewired/Extras/ControlMapper/Scripts/ICustomSelectable.cs" />
      <Compile Include="Assets/Rewired/Extras/ControlMapper/Scripts/CanvasScalerExt.cs" />
      <Compile Include="Assets/Rewired/Extras/ControlMapper/Scripts/InputRow.cs" />
@@ -134,6 +137,7 @@
      <Folder Include="Library/PackageCache/com.unity.render-pipelines.universal@12.1.7/Tests" />
      <None Include="Library/PackageCache/com.unity.modules.cloth@1.0.0/package.json" />
      <None Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Shader/NormalPreview.shader" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Sniper/Textures" />
      <Folder Include="Assets/Rewired/Examples/PlayerMouseUnityUI" />
      <Folder Include="Library/PackageCache/com.unity.modules.imgui@1.0.0" />
      <Folder Include="Assets/Rewired/Internal/Libraries/Runtime/Native/WindowsStandalone/x86" />
@@ -145,6 +149,7 @@
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/differences.es.txt" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/commontypes.zh-Hans.txt" />
      <Folder Include="Library/PackageCache/com.unity.modules.animation@1.0.0" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Pistol/Textures/Shared" />
      <Folder Include="Assets/Rewired/Documentation/Html/files/images" />
      <Folder Include="Assets/Rewired/Examples/ControlRemapping1/Scripts" />
      <None Include="Library/PackageCache/com.unity.ugui@1.0.0/package.json" />
@@ -174,11 +179,11 @@
      <Folder Include="Assets/Rewired/Examples/PressAnyButtonToJoin" />
      <None Include="Library/PackageCache/com.unity.textmeshpro@3.0.6/package.json" />
      <None Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Shader/LineBillboard.shader" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Pistol/Textures/Variation 01" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/guihelp.ja.txt" />
      <None Include="Library/PackageCache/com.unity.modules.imgui@1.0.0/package.json" />
      <Folder Include="Library/PackageCache/com.unity.visualscripting@1.7.8/Graphics" />
      <Folder Include="Assets/Rewired/Extras/TouchControls" />
-     <Folder Include="Assets/Models/Model Mats" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/ValidationExceptions.json" />
      <None Include="Library/PackageCache/com.unity.modules.tilemap@1.0.0/package.json" />
      <Folder Include="Assets/Rewired/Extras/TouchControls/Scripts" />
@@ -192,7 +197,6 @@
      <Folder Include="Assets/Rewired/Internal/Libraries/Runtime/Native/WindowsStandalone" />
      <None Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Shader/VertexPicker.shader" />
      <Folder Include="Assets/Rewired/Extras/TouchControls/Sprites/Buttons" />
-     <Folder Include="Assets/Models/Model Textures" />
      <Folder Include="Assets/Materials" />
      <None Include="Library/PackageCache/com.unity.timeline@1.7.2/package.json" />
      <Folder Include="Assets/Rewired/Internal/Assets/UWP" />
@@ -245,7 +249,7 @@
      <Folder Include="Library/PackageCache/com.unity.timeline@1.7.2" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/clientcommon.ja.txt" />
      <Folder Include="Library/PackageCache/com.unity.modules.cloth@1.0.0" />
-     <Folder Include="Assets/Models/Model Mats/GrappleGunMat" />
+     <Folder Include="Assets/Models/GrappleGun/Materials" />
      <Folder Include="Assets/Rewired/Extras/ControlMapper/Examples" />
      <Folder Include="Assets/Spags Assets/Textures" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/basecommands.zh-Hans.txt" />
@@ -258,11 +262,13 @@
      <None Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Shader/TransparentOverlay.shader" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/differences.ja.txt" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/configurehelper.ja.txt" />
-     <Folder Include="Assets/Models/Model Textures/GrappleGun" />
+     <Folder Include="Assets/Models/GrappleGun/Textures" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Sniper" />
      <None Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Shader/UnlitVertexColor.shader" />
      <Folder Include="Library/PackageCache/com.unity.render-pipelines.universal@12.1.7/Textures/FilmGrain" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/semantic.en.txt" />
      <Folder Include="Library/PackageCache/com.unity.burst@1.7.3" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Pistol" />
      <Folder Include="Assets/Rewired/Documentation/Html/files" />
      <None Include="Library/PackageCache/com.unity.ide.visualstudio@2.0.16/package.json" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/workspaceserver.ko.txt" />
@@ -302,6 +308,7 @@
      <Folder Include="Assets/Samples/ProBuilder/5.0.6/Universal Render Pipeline Support/Shader" />
      <Folder Include="Assets/Rewired/Examples/PlayerMouseSprite/Prefabs" />
      <None Include="Library/PackageCache/com.unity.modules.video@1.0.0/package.json" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Rifle/Textures/Shared" />
      <None Include="Library/PackageCache/com.unity.shadergraph@12.1.7/ValidationConfig.json" />
      <Folder Include="Assets/Rewired/Extras/ControlMapper/Images" />
      <Folder Include="Library/PackageCache/com.unity.shadergraph@12.1.7/Tests" />
@@ -369,6 +376,7 @@
      <None Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Shader/FacePicker.shader" />
      <Folder Include="Assets/Rewired/Examples/FallbackJoystickIdentification/Prefabs" />
      <Folder Include="Library/PackageCache/com.unity.ugui@1.0.0/Tests" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Pistol/Textures" />
      <Folder Include="Assets/Rewired/Extras/ControlMapper/Scripts" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/xdiff.zh-Hant.txt" />
      <None Include="Library/PackageCache/com.unity.modules.umbra@1.0.0/package.json" />
@@ -385,6 +393,8 @@
      <Folder Include="Library/PackageCache/com.unity.modules.ui@1.0.0" />
      <Folder Include="Assets/Rewired/Extras/TouchControls/Examples/TouchButtons1" />
      <Folder Include="Library/PackageCache/com.unity.services.core@1.5.2/Runtime" />
+     <Folder Include="Assets/Models/HookGun" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Rifle/Textures" />
      <Folder Include="Library/PackageCache/com.unity.render-pipelines.universal@12.1.7/Textures" />
      <None Include="Library/PackageCache/com.unity.probuilder@5.0.6/package.json" />
      <Folder Include="Library/PackageCache/com.unity.mathematics@1.2.6" />
@@ -394,6 +404,7 @@
      <Folder Include="Assets/Prefabs" />
      <Folder Include="Assets/Rewired/Examples/SimpleCombinedKeyboardMouseRemapping/Scripts" />
      <Folder Include="Library/PackageCache/com.unity.textmeshpro@3.0.6/Editor Resources/Gizmos" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Heavy/Textures/Variation 08" />
      <None Include="Library/PackageCache/com.unity.modules.audio@1.0.0/package.json" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/cm-help.ko.txt" />
      <Folder Include="Assets/Spags Assets/Textures/Demo" />
@@ -405,6 +416,7 @@
      <Folder Include="Library/PackageCache/com.unity.collab-proxy@1.17.6" />
      <Folder Include="Library/PackageCache/com.unity.render-pipelines.universal@12.1.7/Textures/2D" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/binmergetool.zh-Hans.txt" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Rifle" />
      <None Include="Library/PackageCache/com.unity.render-pipelines.universal@12.1.7/ValidationExceptions.json" />
      <Folder Include="Assets/Rewired/Examples/DualShock4SpecialFeatures" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/i3.es.txt" />
@@ -417,7 +429,7 @@
      <Folder Include="Assets/Rewired/Examples/GamepadTemplateUI/Scripts" />
      <Folder Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor" />
      <Folder Include="Assets/Rewired/Internal/Data/Controllers/HardwareMaps" />
-     <Folder Include="Assets/Models/Model Mats/HookGunMat" />
+     <Folder Include="Assets/Models/HookGun/Materials" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/plastic-gui.es.txt" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/images.en.txt" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/binmergetool.ja.txt" />
@@ -428,10 +440,11 @@
      <Folder Include="Library/PackageCache/com.unity.ide.rider@3.0.16" />
      <None Include="Library/PackageCache/com.unity.modules.unitywebrequestwww@1.0.0/package.json" />
      <Folder Include="Library/PackageCache/com.unity.render-pipelines.core@12.1.7" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Rifle/Textures/Variation 06" />
      <Folder Include="Assets/Rewired/Internal/Data/Controllers/HardwareMaps/Joysticks" />
      <Folder Include="Assets/Rewired/Extras/ControlMapper/Prefabs" />
      <None Include="Library/PackageCache/com.unity.modules.unitywebrequestaudio@1.0.0/package.json" />
-     <Folder Include="Assets/Models/Model Textures/HookGun" />
+     <Folder Include="Assets/Models/HookGun/Textures" />
      <Folder Include="Assets/Rewired/Internal/Assets/Integration" />
      <Folder Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Icons/Modes" />
      <Folder Include="Library/PackageCache/com.unity.searcher@4.9.1/Tests" />
@@ -444,6 +457,7 @@
      <Folder Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Icons/Toolbar" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/ValidationConfig.json" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/images.ja.txt" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Heavy/Textures" />
      <Folder Include="Library/PackageCache/com.unity.ide.vscode@1.2.5" />
      <Folder Include="Library/PackageCache/com.unity.modules.vehicles@1.0.0" />
      <None Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Shader/StandardVertexColor.shader" />
@@ -452,6 +466,7 @@
      <Folder Include="Library/PackageCache/com.unity.services.core@1.5.2" />
      <None Include="Library/PackageCache/com.unity.textmeshpro@3.0.6/Editor Resources/Shaders/TMP_Properties.cginc" />
      <Folder Include="Library/PackageCache/com.unity.render-pipelines.core@12.1.7/Tests" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Rifle/Materials" />
      <Folder Include="Assets/Rewired/Internal/Libraries/Runtime/Native/MacOSStandalone" />
      <None Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Shader/PointBillboard.shader" />
      <Folder Include="Assets/Rewired/Internal" />
@@ -462,6 +477,7 @@
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/mergetool.zh-Hant.txt" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/clientcommon.zh-Hans.txt" />
      <Folder Include="Assets/Rewired/Extras/ControlMapper" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Sniper/Textures/Shared" />
      <None Include="Assets/Rewired/Internal/Assets/InputManagerSettings.json" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/semantic.ja.txt" />
      <Folder Include="Assets/Rewired/Extras/TouchControls/Examples" />
@@ -497,8 +513,11 @@
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/configurehelper.ko.txt" />
      <None Include="Library/PackageCache/com.unity.textmeshpro@3.0.6/PackageConversionData_Assets.json" />
      <Folder Include="Library/PackageCache/com.unity.probuilder@5.0.6/External" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Sniper/Textures/Variation 04" />
      <Folder Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Editor" />
+     <Folder Include="Assets/Models/GrappleGun" />
      <Folder Include="Library/PackageCache/com.unity.render-pipelines.universal@12.1.7/Textures/BlueNoise16/L" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Heavy" />
      <Folder Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Upgrade" />
      <None Include="Library/PackageCache/com.unity.mathematics@1.2.6/ValidationExceptions.json" />
      <Folder Include="Library/PackageCache/com.unity.textmeshpro@3.0.6/Package Resources" />
@@ -535,12 +554,14 @@
      <Folder Include="Assets/Rewired/Internal/Scripts/Platforms/Windows" />
      <None Include="Library/PackageCache/com.unity.render-pipelines.universal@12.1.7/ValidationConfig.json" />
      <None Include="Library/PackageCache/com.unity.modules.unitywebrequest@1.0.0/package.json" />
+     <Folder Include="Assets/Models/Sci-Fi Guns" />
      <Folder Include="Assets/Rewired/Internal/Data/Controllers/HardwareMaps/Joysticks/Templates" />
      <Folder Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Material/Textures" />
      <None Include="Library/PackageCache/com.unity.modules.uielements@1.0.0/package.json" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/plastic-gui.ja.txt" />
      <None Include="Library/PackageCache/com.unity.burst@1.7.3/package.json" />
      <Folder Include="Assets/Rewired/Examples/FallbackJoystickIdentification" />
+     <Folder Include="Assets/Models/Sci-Fi Guns/Heavy/Textures/Shared" />
      <Folder Include="Assets/Rewired/Internal/Scripts/Misc" />
      <None Include="Library/PackageCache/com.unity.probuilder@5.0.6/Content/Shader/FaceHighlight.shader" />
      <None Include="Library/PackageCache/com.unity.collab-proxy@1.17.6/Lib/Editor/PlasticSCM/localization/i3.en.txt" />

@@ -17,12 +17,12 @@ public class Player : MonoBehaviour
     [SerializeField] private float slideSpeed;
     [SerializeField] private float wallrunSpeed;
     [SerializeField] private float dashSpeed;
+    [SerializeField] private float airSpeed;
+    [SerializeField] private float swingSpeed;
     [SerializeField] private float dashSpeedChangeFactor;
     [SerializeField] private float speedCap;
     [SerializeField] private float ySpeedCap;
     [SerializeField] private float groundDrag;
-    [SerializeField] private float airSpeed;
-    [SerializeField] private float swingSpeed;
     
     private Rigidbody rb;
     
@@ -274,13 +274,16 @@ public class Player : MonoBehaviour
     private Rewired.Player player;
     
     [HideInInspector] public bool fireLeft;
+    [HideInInspector] public bool fireDownLeft;
     [HideInInspector] public bool fireRight;
+    [HideInInspector] public bool fireDownRight;
     [HideInInspector] public bool jump;
     [HideInInspector] public bool sprint;
     [HideInInspector] public bool crouch;
     [HideInInspector] public bool dash;
     [HideInInspector] public bool scrollUp;
     [HideInInspector] public bool scrollDown;
+    [HideInInspector] public bool reload;
     
     private bool readyToJump = true;
 
@@ -357,7 +360,9 @@ public class Player : MonoBehaviour
         if (!player.GetButton("A") && !player.GetButton("D")) moveVector.x = 0f;
         
         fireLeft = player.GetButton("Fire Left");
+        fireDownLeft = player.GetButtonDown("Fire Left");
         fireRight = player.GetButton("Fire Right");
+        fireDownRight = player.GetButtonDown("Fire Right");
         
         lookVector.y += player.GetAxis("Look Horizontal");
         lookVector.x += player.GetAxis("Look Vertical");
@@ -368,6 +373,7 @@ public class Player : MonoBehaviour
         sprint = player.GetButton("Sprint");
         crouch = player.GetButton("Crouch");
         dash = player.GetButton("Dash");
+        reload = player.GetButton("Reload");
         
         if (player.GetAxis("Scroll") > 0)
         {
