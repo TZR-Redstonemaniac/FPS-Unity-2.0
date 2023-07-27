@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using Rewired;
@@ -20,7 +19,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float airSpeed;
     [SerializeField] private float swingSpeed;
     [SerializeField] private float dashSpeedChangeFactor;
-    [SerializeField] private float speedCap;
     [SerializeField] private float ySpeedCap;
     [SerializeField] private float groundDrag;
     
@@ -97,22 +95,17 @@ public class Player : MonoBehaviour
     {
         if (crouch)
         {
-            if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.25f + 0.3f))
-            {
-                var angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-                return angle <= maxSlopeAngle && angle != 0;
-            }
+            if (!Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.25f + 0.3f)) return false;
+            var angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle <= maxSlopeAngle && angle != 0;
         }
         else
         {
-            if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
-            {
-                var angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-                return angle <= maxSlopeAngle && angle != 0;
-            }
+            if (!Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.3f))
+                return false;
+            var angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle <= maxSlopeAngle && angle != 0;
         }
-
-        return false;
     }
 
     private Vector3 GetSlopeDirectionMovement(Vector3 direction)
@@ -335,7 +328,7 @@ public class Player : MonoBehaviour
 
         startYScale = transform.localScale.y;
     }
-    
+
     private void Update()
     {
         CheckInput();
@@ -643,13 +636,11 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter()
     {
-        if (enableMovementOnNextTouch)
-        {
-            enableMovementOnNextTouch = false;
-            ResetRestrictions();
+        if (!enableMovementOnNextTouch) return;
+        enableMovementOnNextTouch = false;
+        ResetRestrictions();
 
-            camHolder.GetComponentInChildren<HookGun>().StopHook();
-        }
+        camHolder.GetComponentInChildren<HookGun>().StopHook();
     }
 
     private void ResetRestrictions()
@@ -681,7 +672,7 @@ public class Player : MonoBehaviour
 
             if (OnSlope() && !exitingSlope)
             {
-                rb.AddForce(GetSlopeDirectionMovement(moveDir) * moveSpeed * 2.5f, ForceMode.Force);
+                rb.AddForce(GetSlopeDirectionMovement(moveDir) * (moveSpeed * 2.5f), ForceMode.Force);
 
                 if (moveVector.magnitude != 0) rb.AddForce(Vector3.down * keepOnSlopeForce, ForceMode.Force);
             }
@@ -689,10 +680,10 @@ public class Player : MonoBehaviour
             switch (grounded)
             {
                 case true:
-                    rb.AddForce(moveDir.normalized * moveSpeed * 10, ForceMode.Force);
+                    rb.AddForce(moveDir.normalized * (moveSpeed * 10), ForceMode.Force);
                     break;
                 case false:
-                    rb.AddForce(moveDir.normalized * moveSpeed * 10 * airMult, ForceMode.Force);
+                    rb.AddForce(moveDir.normalized * (moveSpeed * 10 * airMult), ForceMode.Force);
                     break;
             }
 
@@ -1023,7 +1014,7 @@ public class Player : MonoBehaviour
 
         if (distanceToLedge > 1f)
         {
-            if (rb.velocity.magnitude < moveToLedgeSpeed) rb.AddForce(directionToLedge.normalized * moveToLedgeSpeed * 1000 * Time.deltaTime);
+            if (rb.velocity.magnitude < moveToLedgeSpeed) rb.AddForce(directionToLedge.normalized * (moveToLedgeSpeed * 1000 * Time.deltaTime));
         }
         else
         {
@@ -1118,7 +1109,7 @@ public class Player : MonoBehaviour
     {
         var direction = allowAllDir ? moveDir + forwardT.forward : forwardT.forward;
 
-        if (moveVector.x == 0 && moveVector.z == 0) direction = forwardT.forward;
+        if (moveVector is { x: 0, z: 0 }) direction = forwardT.forward;
 
         return direction.normalized;
     }
